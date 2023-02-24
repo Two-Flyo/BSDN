@@ -98,7 +98,7 @@ bool EnumFile(const std::string &src_path, std::vector<std::string> *files_list)
 	// 判断路径是否存在
 	if (!fs::exists(root_path))
 	{
-		std::cerr << src_path << " not exists" << std::endl;
+		std::cerr << "error: " << src_path << " not exists" << std::endl;
 		return false;
 	}
 
@@ -170,7 +170,7 @@ bool SaveHtml(const std::vector<DocInfo_t> &result, const std::string &output)
 	std::ofstream out(output, std::ios::out | std::ios::binary);
 	if (!out.is_open())
 	{
-		std::cerr << "open " << output << "failed!" << std::endl;
+		std::cerr << "error: open " << output << "failed!" << std::endl;
 		return false;
 	}
 
@@ -199,7 +199,7 @@ int main()
 	// 1.把Boost库每个html文件(包含路径),保存到files_list中,方便后期对每个文件的读取
 	if (!EnumFile(src_path, &files_list))
 	{
-		std::cerr << "enum file name error!" << std::endl;
+		std::cerr << "error: enum file name error!" << std::endl;
 		return 1;
 	}
 
@@ -207,14 +207,14 @@ int main()
 	std::vector<DocInfo_t> results;
 	if (!ParseHtml(files_list, &results))
 	{
-		std::cerr << "parse html error" << std::endl;
+		std::cerr << "error: parse html error" << std::endl;
 		return 2;
 	}
 
 	// 3.把所有解析完毕的文件内容,写入到original.txt文件中, 按照\3作为每个文档的分隔符
 	if (!SaveHtml(results, output))
 	{
-		std::cerr << "save html error" << std::endl;
+		std::cerr << "error: save html error" << std::endl;
 		return 3;
 	}
 

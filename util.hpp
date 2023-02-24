@@ -1,6 +1,11 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <boost/algorithm/string.hpp>
+
 
 namespace util
 {
@@ -25,5 +30,15 @@ namespace util
             in.close();
             return true;
         }
+    };
+
+    class StringUtil
+    {
+        public:
+            static void CutString(const std::string &target, std::vector<std::string> *out, std::string sep)
+            {
+                // Boost split 切分字符串
+                boost::split(*out, target, boost::is_any_of(sep), boost::token_compress_on);
+            }   
     };
 }
