@@ -111,10 +111,51 @@ namespace Index
 			forward_index.push_back(doc);
 			return &forward_index.back();
 		}
-		bool BuildInvertedIndex(const DocInfo &doc) 
+		bool BuildInvertedIndex(const DocInfo &doc)
 		{
-			//DocInfotitle, content, url, doc_id;
-			//word -> 倒排拉链 
+			// DocInfotitle, content, url, doc_id;
+			// word -> 倒排拉链
+			struct word_cnt
+			{
+				int title_cnt;
+				int content_cnt;
+				word_cnt()
+					: title_cnt(0), content_cnt(0) {}
+			};
+
+			std::unordered_map<std::string, word_cnt> word_map; // 用来暂存词频映射表
+			std::vector<std::string> title_words;
+
+			// 对标题进行词频统计
+			util::JiebaUtil::CutString(doc.title, &title_words);
+			for (auto s : title_words)
+			{
+				boost::to_lower(s); // 将我们的分词统一转换为小写
+				word_map[s].title_cnt++;
+			}
+			// 对内容进行词频统计
+			std::vector<std::string> content_words;
+			util::JiebaUtil::CutString(doc.content, &content_words);
+			for (auto s : content_words)
+			{
+				boost::to_lower(s);
+				word_map[s].content_cnt++;
+			}
+
+#define X 10
+#define Y 1
+
+			for (auto &word_pair : word_map)
+			{
+				InvertedElem it;
+				it.doc_id = doc.doc_id;
+				it.word = word_pair.first;
+				it.weight = X * word_pair.second.title_cnt + Y * word_pair.second.content_cnt; // 相关性
+				InvertedList &inverted_list = inverted_index[word_pair.first];
+				inverted_list.push_back(it);
+			}
+
+			return true;
 		}
 	};
 
